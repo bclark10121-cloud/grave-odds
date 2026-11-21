@@ -4,6 +4,8 @@ Updated 2026-11-21. BC decides the order. Plan: `ideas/n65/PLAN.md` in game-stud
 
 ## Done
 
+- 0.2.1 (2026-11-21): cards select by tap again (a tap counted twice and dropped the card), panels fit their buttons.
+
 - 0.2.0 The run (2026-11-21): the dungeon map with fair routes, two floors (The Crypt, The Drowned Nave), Fight, Elite, Shrine, Treasure, Rest and Boss rooms, the Ossuary King and the Tollkeeper, gear in four slots and four tiers, ten charms with reorder, rites, three shrines, Tallowgate with the Smith, Mender, Curio Stall and Chapel, the Codex, the full ten achievements, whole-run saves.
 
 - 0.1.0 Gray box fight (2026-11-21): the day one shell, three fights in a row in the Crypt (Crypt Rat, Bone Warden, Lantern Wight), poker hands scored as Force x Fury, damage preview, the monster's next strike shown, free discards, sort by rank or suit, heal 10 after a win, a lost fight ends the run, Candlelight, Dusk and Midnight, ten achievements and six stats, score and best, four-color deck, best hand hint, title font Grenze Gotisch, chant on the start screen and Crypt in fights, upright and sideways, Xbox controller, Android back button.
