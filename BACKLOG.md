@@ -1,8 +1,10 @@
 # Gravehand: backlog
 
-Updated 2026-11-21. BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
+Updated 2026-11-21 (0.4.0). BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
 
 ## Done
+
+- 0.4.0 The look, part 1 (2026-11-21): stained glass art from Nano Banana 2.1 (BC's pick after a side-by-side test). Five floor 1 monster portraits, twelve court cards, four Ace emblems, a new card back, a deck stack, a bigger sideways portrait. Readability first: corner rank and suit always on top.
 
 - 0.3.0 Deeper (2026-11-21): floor 3 The Bell Vaults and the Carrion Clock, all twenty charms, the full gear list, Dread signature lines, the Dread pity rule, stars, daily goals, player level with table and card edge colors, Menu > Progress.
 
@@ -16,12 +18,13 @@ Updated 2026-11-21. BC decides the order. Plan: `ideas/n65/PLAN.md` in game-stud
 
 - BC plays 0.1 and sends notes on the feel and the difficulty.
 - BC plays 0.2 and sends notes on the run, the loot and the difficulty.
-- Next: 0.4 The look, starting with 2D monster art made in Gemini (BC, 2026-11-21, 10:59 AM: "We need to add 2d monsters via gemini in the next release").
+- BC plays 0.4 and sends notes on the monster and card art.
+- Next: 0.4 The look, part 2. Floor 2 and 3 monster art in the same AI Studio chat, then the map, town and sound set.
 
 ## Asked for by BC, not built yet
 
 - 0.3 Deeper: floor 3 and the Carrion Clock, all twenty charms, all gear lines and Dread items, 1,000 bot runs per difficulty for balance, stars, daily goals, player level cosmetics.
-- 0.4 Look and sound (the MVP): stained glass art from the decision page, card faces and backs, monsters, bosses, map, town, sound set, drag to reorder the hand.
+- 0.4 Look and sound (the MVP), still to build: floor 2 and 3 monsters and bosses, the map, the town, the sound set, drag to reorder the hand. Card faces, the card back and floor 1 monsters shipped in 0.4.0.
 - The look and sound decision page (G0.16). 0.1 used best judgement picks.
 
 ## Ideas to choose from (BC picks by number)
