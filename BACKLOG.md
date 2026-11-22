@@ -1,8 +1,10 @@
 # Gravehand: backlog
 
-Updated 2026-11-21 (0.4.1). BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
+Updated 2026-11-21 (0.4.2). BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
 
 ## Done
+
+- 0.4.2 (2026-11-21): a new app icon, the spade with the crowned skull on cobalt stained glass (BC picked option B of four). The Game Shelf card shows the same picture. Nothing in the game changed.
 
 - 0.4.1 The look, part 2 (2026-11-21): the map climbs from the bottom with stained glass room medallions and tap a room, Candlelight first, ten floor 2 and 3 monster portraits, a new fight layout that uses the screen (monster card, bigger portrait, damage panel), three floor backdrops, gear and charm icon slots, medallion icons on Play Hand, Discard, Sort and Menu.
 
@@ -21,14 +23,15 @@ Updated 2026-11-21 (0.4.1). BC decides the order. Plan: `ideas/n65/PLAN.md` in g
 - BC plays 0.1 and sends notes on the feel and the difficulty.
 - BC plays 0.2 and sends notes on the run, the loot and the difficulty.
 - BC plays 0.4.1 on his tablet and phone and sends notes on the map, the fight layout and the slots.
-- Next: 0.4.2 number cards. BC picked look C, dark Diablo cards. The Pro pictures are in `art_src/nb21/cards/`. First BC picks between face cards on bone and face cards on the dark gold frame.
+- BC looks at the new icon on his phone and on The Game Shelf (0.4.2).
+- Next: 0.4.3 number cards. BC picked look C, dark Diablo cards. The Pro pictures are in `art_src/nb21/cards/`. First BC picks between face cards on bone and face cards on the dark gold frame.
 - Then: the town art and the sound set (the rest of 0.4).
 
 ## Asked for by BC, not built yet
 
 - 0.3 Deeper: floor 3 and the Carrion Clock, all twenty charms, all gear lines and Dread items, 1,000 bot runs per difficulty for balance, stars, daily goals, player level cosmetics.
-- 0.4 Look and sound (the MVP), still to build: number cards (0.4.2), the town, the sound set, drag to reorder the hand. Card faces, the card back and floor 1 monsters shipped in 0.4.0. Floor 2 and 3 monsters, the map and the fight layout shipped in 0.4.1.
-- 2026-11-21: "I want to improve the artwork of the front of the cards with the numbers ... should have more diablo design and flare to them". Look C picked. Comes in 0.4.2.
+- 0.4 Look and sound (the MVP), still to build: number cards (0.4.3), the town, the sound set, drag to reorder the hand. Card faces, the card back and floor 1 monsters shipped in 0.4.0. Floor 2 and 3 monsters, the map and the fight layout shipped in 0.4.1.
+- 2026-11-21: "I want to improve the artwork of the front of the cards with the numbers ... should have more diablo design and flare to them". Look C picked. Comes in 0.4.3.
 - 2026-11-21, 5:00 PM: "We need to add joker cards and images for each one. do 5 per release", with a list of about 55 Balatro jokers (common and uncommon). In Gravehand these are charms. BC, 5:14 PM: "Original names" and "if that is what the charms are for that is fine, just want to reuse the abilities". So: new charms with Gravehand names, stained glass medallion icons and the listed abilities in Gravehand's terms (Chips are Force, Mult is Fury, $ is gold). Five per release, each batch with a bot balance run. Suggested first five: the four suit charms and the Pair charm.
 - Old saves in the test gate (G5.24): a `tests/saves/` folder with one save per save version. `release_check.py` fails on it today.
 - A controller way to open a gear or charm slot in the fight (0.4.1 opens them by tap. Menu > Charms and gear shows the same text).
@@ -54,6 +57,8 @@ Updated 2026-11-21 (0.4.1). BC decides the order. Plan: `ideas/n65/PLAN.md` in g
 - Betting, chips or a casino look.
 
 ## Decisions from BC
+
+- 2026-11-21, 5:38 PM: "make a new logo and apk for gravehand, dont like the curent one". Four stained glass options on Nano Banana Pro. 5:44 PM: "B for apk image" (the spade and skull). 5:45 PM: "use the same image on teh gameshelf". Shipped as 0.4.2.
 
 - 2026-11-21, 2:53 to 3:08 PM: a new AI Studio chat for the art, better map art for "the branch tree" and the "fight, treaure, elite, boss selections", "start at the bottom for the first levels and make our way up", "easy first" on the difficulty page, "better icons for the discard, sory and play hand" "and menu in top right", and "take advantage of screen space better for horizontal and vertical views. Maybe make the enemy bigger". Of six layout ideas: "do all 6", "do 4 last though".
 - 2026-11-21, 4:22 to 4:50 PM: number cards need work. Samples first, then "C: dark diablo cards", then the model: "fast", then "sorry, pro".

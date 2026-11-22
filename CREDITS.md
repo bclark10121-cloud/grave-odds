@@ -1,6 +1,6 @@
 # Credits
 
-Gravehand is an original game. The suits, start screen and table are drawn in code. The monster portraits, court card and Ace pictures, the card back, the map, button, gear and charm medallions and the floor backdrops were made for this game with Google's Nano Banana 2.1 image model (0.4.0 and 0.4.1). See `art_src/nb21/README.md`. No personal names here (G1.11).
+Gravehand is an original game. The suits, start screen and table are drawn in code. The monster portraits, court card and Ace pictures, the card back, the map, button, gear and charm medallions and the floor backdrops were made for this game with Google's Nano Banana 2.1 image model (0.4.0 and 0.4.1). The app icon (0.4.2) was made with Google's Nano Banana Pro image model. See `art_src/nb21/README.md`. No personal names here (G1.11).
 
 ## Music (found through the Patch.gg asset library)
 
