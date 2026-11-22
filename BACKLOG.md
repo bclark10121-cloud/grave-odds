@@ -1,6 +1,6 @@
 # Grave Odds (was Gravehand): backlog
 
-Updated 2026-11-21 (0.4.4). BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
+Updated 2026-11-22 (0.4.5). BC decides the order. Plan: `ideas/n65/PLAN.md` in game-studio.
 
 ## Done
 
@@ -35,7 +35,7 @@ Updated 2026-11-21 (0.4.4). BC decides the order. Plan: `ideas/n65/PLAN.md` in g
 - 0.4 Look and sound (the MVP), still to build: the town and drag to reorder the hand. The sound set shipped in 0.4.4. Card faces, the card back and floor 1 monsters shipped in 0.4.0. Floor 2 and 3 monsters, the map and the fight layout shipped in 0.4.1.
 - 2026-11-21: "I want to improve the artwork of the front of the cards with the numbers ... should have more diablo design and flare to them". Look C picked. Shipped in 0.4.3.
 - 2026-11-21, 5:00 PM: "We need to add joker cards and images for each one. do 5 per release", with a list of about 55 Balatro jokers (common and uncommon). In Gravehand these are charms. BC, 5:14 PM: "Original names" and "if that is what the charms are for that is fine, just want to reuse the abilities". So: new charms with Gravehand names, stained glass medallion icons and the listed abilities in Gravehand's terms (Chips are Force, Mult is Fury, $ is gold). Five per release, each batch with a bot balance run. Suggested first five: the four suit charms and the Pair charm.
-- 2026-11-22, 8:57 AM: "add to the backlog to redesign the number cards, the face cards look great, but not sure i love the numbered cards". Redesign the number cards (2 to 10). Keep the face cards and Aces as they are. Not started. First step: a decision page with options side by side on the real card frame (G0.16), and BC names the model for any new art (Nano Banana Pro was his pick for the number cards).
+- 2026-11-22, 8:57 AM: "add to the backlog to redesign the number cards, the face cards look great, but not sure i love the numbered cards". Redesign the number cards (2 to 10). Keep the face cards and Aces as they are. BC picked Suit glass with tracery on the decision page (9:46 AM). Building in 0.4.5.
 - Old saves in the test gate (G5.24): a `tests/saves/` folder with one save per save version. `release_check.py` fails on it today.
 - Charm names beside the slots on a tablet held sideways (no room in 0.4.1).
 
@@ -46,6 +46,9 @@ Updated 2026-11-21 (0.4.4). BC decides the order. Plan: `ideas/n65/PLAN.md` in g
   - The browser test's own loot shard pictures catch the gear panel, since headless Chrome draws few frames. The checks still pass.
   - With Text size Large the card corner rank is no bigger on screen than at Normal, since the upright hand cards shrink (fresh review of the card corners, 2026-11-22). G5.26 asks for a quarter more.
   - The count-up row's small cards show the rank at about 12 px, under the 16 px floor (G5.26).
+  - The gold card frame and gems still shimmer a little on the small count-up cards (their imports have mipmaps off, 0.4.5 turned them on for the new windows only).
+  - The charm panels open with a first guess at their size and settle a few frames later, so a scroll bar can flicker for a moment on the tablet (seen in the 0.4.5 test).
+  - Silver spades on silver glass have the least contrast of the four suits. Clubs read softer with red-green colorblindness.
 
 ## Ideas to choose from (BC picks by number)
 
