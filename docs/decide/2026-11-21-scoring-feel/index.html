@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gravehand 0.4.4: scoring feel and the big score</title>
+<style>@font-face{font-family:"GameTitle";src:url(title.woff2) format("woff2")}</style>
+<!-- Decision page (G0.16). Copy this folder, fill in DECISION below, put previews beside it (audio/, img/, video/),
+     push it to bclark10121-cloud/bc-decisions as <date>-<topic>/index.html, add it to that repo's index.html
+     open https://bclark10121-cloud.github.io/bc-decisions/<date>-<topic>/ in a NEW full-width browser tab
+     and put that full link in the reply. Never as a Claude artifact. BC picks, presses Copy my picks and pastes the text in chat.
+     A new game's look and sound page uses the sections in NEW_GAME_LOOK_AND_SOUND.md, APK icon first (BC, 2026-11-20). -->
+<style>
+:root{--bg:#14121c;--card:#1f1c2b;--ink:#f1ece2;--mute:#a9a2b8;--acc:#f2b84b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+header,main{max-width:none;margin:0;padding:0 28px}header{padding-top:28px}main{padding-bottom:130px}
+h1{font:600 28px Fraunces,serif;margin:0 0 6px}h2{font:600 21px Fraunces,serif;margin:28px 0 0}
+.mute{color:var(--mute)}.note{background:var(--card);border-radius:12px;padding:12px 14px;margin-top:12px;color:var(--mute);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(832px,100%),832px));justify-content:start;gap:16px;margin-top:10px}
+.card{background:var(--card);border:2px solid transparent;border-radius:14px;padding:14px}.card.on{border-color:var(--acc)}
+.opt{color:var(--acc);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+h3{margin:2px 0 4px;font-size:17px}.meta{color:var(--mute);font-size:13px}
+.card img,.card video{width:100%;max-width:800px;border-radius:10px;margin:8px 0}audio{width:100%;margin:10px 0 8px}
+.rec{display:inline-block;background:#2e2a40;color:var(--acc);font-size:11px;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:6px}
+button{font:600 14px Inter,sans-serif;border:0;border-radius:10px;padding:9px 14px;cursor:pointer;background:#2e2a40;color:var(--ink)}
+.card.on .pick{background:var(--acc);color:#1b1608}
+textarea{width:100%;margin-top:10px;background:var(--card);color:var(--ink);border:1px solid #2e2a40;border-radius:10px;padding:10px;font:14px Inter,sans-serif}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#0d0c13ee;border-top:1px solid #2e2a40;padding:12px 20px}
+.bar div{margin:0;display:flex;gap:12px;align-items:center;flex-wrap:wrap}#sum{flex:1;color:var(--mute);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#copy{background:var(--acc);color:#1b1608}.spd.on{background:#4a4368;color:var(--acc)}.live{position:relative}.live:after{content:'\25CF  Moving preview';position:absolute;left:10px;top:18px;font:600 11px Inter,sans-serif;color:#fff;background:#0009;border-radius:6px;padding:2px 7px}
+</style><style>header{padding:14px 22px 0}main{padding:0 22px 90px}h1{font-size:22px}h2{font-size:17px;margin:14px 0 0}.note{padding:8px 12px;margin-top:6px}.grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin-top:6px}.card{padding:9px;border-radius:10px}h3{font-size:14px;margin:0 0 2px}.meta{font-size:12px;line-height:1.35}.card img,.card video{max-width:100%;margin:5px 0;border-radius:7px}.card canvas{width:100%!important;aspect-ratio:16/9!important;margin:5px 0!important}button{padding:6px 11px;font-size:13px}textarea{margin-top:6px;padding:6px;font-size:13px}main>section p.mute{margin:2px 0;font-size:13px}</style></head><body>
+<header><h1 id="title"></h1><p class="mute" id="intro"></p><div class="note" id="note"></div></header>
+<main id="main"></main>
+<div class="bar"><div><span id="sum">No picks yet.</span><span class="mute" style="font-size:13px">Preview speed</span><button class="spd" data-s="1">1x</button><button class="spd on" data-s="2">2x</button><button class="spd" data-s="4">4x</button><button id="copy">Copy my picks</button></div></div>
+<script>
+// Fill this in. Each question gets one pick. media: {audio|img|video: "relative/path"} or {draw: "name"} for a live canvas
+// sketch drawn by SCENES[name](ctx, t, w, h). rec: true marks Claude's recommendation.
+// Moving sketches for 0.4.4 (G0.16). Plain shapes plus the game's own pictures. The pick gets built properly in Godot.
+const IMG = {};
+for (const k of ['rat', 'face', 'gem_h', 'c1', 'c2', 'blade']) { const i = new Image(); i.src = 'img/' + k + '.webp'; IMG[k] = i; }
+const GOLD = '#e8b84a', BONE = '#efe6d2', BG = '#0e0c14', RUBY = '#b81d2c';
+const ok = im => im.complete && im.naturalWidth;
+function clear(g, w, h) { g.fillStyle = BG; g.fillRect(0, 0, w, h); }
+function txt(g, s, x, y, size, col, al) { g.font = size + 'px "GameTitle", Georgia, serif'; g.textAlign = al || 'center'; g.fillStyle = col; g.fillText(s, x, y); }
+function sans(g, s, x, y, size, col, al) { g.font = '600 ' + size + 'px system-ui, sans-serif'; g.textAlign = al || 'center'; g.fillStyle = col; g.fillText(s, x, y); }
+function cardAt(g, x, y, lit, lift) { const cw = 46, ch = 64; y -= lift; if (ok(IMG.face)) g.drawImage(IMG.face, x, y, cw, ch); else { g.fillStyle = '#2a2033'; g.fillRect(x, y, cw, ch); }
+  if (ok(IMG.gem_h)) g.drawImage(IMG.gem_h, x + 13, y + 22, 20, 20); if (lit) { g.strokeStyle = '#fff2c0'; g.lineWidth = 3; g.strokeRect(x - 2, y - 2, cw + 4, ch + 4); } }
+function panel(g, x, y, w, h) { g.fillStyle = 'rgba(20,16,28,.95)'; g.strokeStyle = GOLD; g.lineWidth = 2; g.beginPath(); g.roundRect(x, y, w, h, 8); g.fill(); g.stroke(); }
+// One scored hand: 5 cards, Force 95, Fury 4, two charms, total 470.
+function tally(g, t, w, h, mode) {
+  clear(g, w, h); const T = t % 5.2;
+  const step = mode === 'full' ? 0.32 : 0, cardsEnd = mode === 'full' ? 5 * step : (mode === 'quick' ? 0.35 : 0);
+  const furyAt = mode === 'instant' ? 0 : cardsEnd + 0.35, charmAt = furyAt + (mode === 'full' ? 0.4 : 0.25), totalAt = mode === 'instant' ? 0.05 : charmAt + (mode === 'full' ? 0.8 : 0.3);
+  let force = 0; const vals = [14, 13, 12, 11, 10]; let lit = -1;
+  for (let i = 0; i < 5; i++) { const at = mode === 'full' ? i * step : 0; if (T >= at) { force += vals[i]; lit = i; } }
+  force += 35 * (T >= 0 ? 1 : 0);
+  for (let i = 0; i < 5; i++) { const at = mode === 'full' ? i * step : 0; const on = T >= at && T < at + (mode === 'full' ? 0.28 : 0.3); cardAt(g, 40 + i * 56, 150, on, on ? 10 : 0);
+    if (on && mode !== 'instant') sans(g, '+' + vals[i], 63 + i * 56, 140, 16, '#7fb8ff'); }
+  panel(g, 320, 30, 140, 112);
+  sans(g, 'Force', 360, 52, 12, '#a9a2b8'); sans(g, 'Fury', 430, 52, 12, '#a9a2b8');
+  sans(g, String(mode === 'instant' ? 95 : force), 360, 78, 24, '#7fb8ff');
+  let fury = T >= furyAt ? 2 : 0; if (T >= charmAt) fury = 3; if (T >= charmAt + (mode === 'full' ? 0.4 : 0)) fury = 4;
+  sans(g, String(fury), 430, 78, 24, '#ff6b6b');
+  for (const [k, im, at] of [[0, IMG.c1, charmAt], [1, IMG.c2, charmAt + (mode === 'full' ? 0.4 : 0)]]) { const on = mode !== 'instant' && T >= at && T < at + 0.35; const s = on ? 46 : 36; if (ok(im)) g.drawImage(im, 330 + k * 60 + (36 - s) / 2, 200 + (36 - s) / 2, s, s); if (on) sans(g, k ? 'x Fury' : '+1 Fury', 348 + k * 60, 196, 12, '#ff6b6b'); }
+  if (T >= totalAt) { const k = Math.min(1, (T - totalAt) / 0.25), sh = (1 - k) * 6 * Math.sin(T * 60); txt(g, '= ' + (mode === 'instant' ? 470 : Math.round(470 * Math.min(1, (T - totalAt) / (mode === 'full' ? 0.6 : 0.2)))), 390 + sh, 128, 32, GOLD); }
+  sans(g, mode === 'full' ? 'About 2.5 s at 1x' : mode === 'quick' ? 'About 1.2 s at 1x' : 'At once', 240, 258, 13, '#a9a2b8');
+}
+function flare(g, t, w, h, kind) {
+  clear(g, w, h); const T = t % 3.4, on = T > 0.7, k = Math.min(1, Math.max(0, (T - 0.7) / 0.4));
+  if (ok(IMG.rat)) g.drawImage(IMG.rat, 30, 40, 120, 160);
+  panel(g, 190, 70, 250, 110); sans(g, 'Straight', 315, 100, 16, GOLD);
+  const n = Math.round(Math.min(520, T / 0.7 * 520)); txt(g, '= ' + n, 315, 150, 40, on ? '#fff2c0' : GOLD);
+  sans(g, on ? 'This kills it' : 'Then it strikes for 7', 315, 172, 13, on ? '#7fe0a0' : '#a9a2b8');
+  if (!on) return;
+  if (kind === 'fire') { for (let i = 0; i < 34; i++) { const s = i * 37.7, x = 195 + (s * 7.3) % 240, life = (T * 1.6 + s) % 1, y = 180 - life * (60 + (i % 5) * 14) * k; const r = (1 - life) * 9 * k + 2;
+      const gr = g.createRadialGradient(x, y, 0, x, y, r * 2); gr.addColorStop(0, 'rgba(255,230,140,.95)'); gr.addColorStop(.5, 'rgba(255,120,30,.7)'); gr.addColorStop(1, 'rgba(180,20,30,0)'); g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 2, 0, 7); g.fill(); } }
+  if (kind === 'glass') { g.strokeStyle = `rgba(255,242,192,${.9 * k})`; g.lineWidth = 2; for (let i = 0; i < 9; i++) { const a = i * 0.7 + 0.3; g.beginPath(); g.moveTo(315, 125); let x = 315, y = 125; for (let j = 0; j < 4; j++) { x += Math.cos(a + j * .3) * 22 * k; y += Math.sin(a + j * .3) * 14 * k; g.lineTo(x, y); } g.stroke(); }
+    const sx = 190 + ((T - 0.7) * 300) % 300; const gr = g.createLinearGradient(sx - 30, 0, sx + 30, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = gr; g.fillRect(190, 70, 250, 110); }
+  if (kind === 'gold') { g.save(); g.translate(315, 125); for (let i = 0; i < 16; i++) { g.rotate(Math.PI / 8); g.fillStyle = `rgba(232,184,74,${.35 * k})`; g.beginPath(); g.moveTo(0, -6); g.lineTo(150 * k, 0); g.lineTo(0, 6); g.fill(); } g.restore();
+    for (let i = 0; i < 24; i++) { const a = i * 0.9, r = (T - 0.7) * 160; g.fillStyle = GOLD; g.beginPath(); g.arc(315 + Math.cos(a) * r, 125 + Math.sin(a) * r * .6 + r * r * .002, 3, 0, 7); g.fill(); } }
+}
+function hit(g, t, w, h, power) {
+  clear(g, w, h); const T = t % 2.4, at = 0.8, d = T - at; let ox = 0, oy = 0, s = 1, flash = 0, frozen = false;
+  if (d > 0 && d < 0.5) { const f = 1 - d / 0.5; ox = Math.sin(d * 90) * power * 14 * f; oy = Math.cos(d * 70) * power * 8 * f; s = 1 - 0.06 * power * f; flash = f * .7; frozen = power > 0.6 && d < 0.09; }
+  if (ok(IMG.rat)) { g.save(); g.translate(240 + ox, 120 + oy); g.scale(s, s); g.drawImage(IMG.rat, -75, -100, 150, 200); if (flash) { g.fillStyle = `rgba(255,255,255,${flash})`; g.fillRect(-75, -100, 150, 200); } g.restore(); }
+  if (d > 0 && d < 1.2) txt(g, '-470', 330, 90 - d * 40, 34, `rgba(255,230,140,${1 - d / 1.2})`);
+  sans(g, frozen ? 'hit pause' : '', 240, 250, 13, '#a9a2b8');
+}
+function loot(g, t, w, h, kind) {
+  clear(g, w, h); const T = t % 4.4, col = '#ff5c6c';
+  const fall = Math.min(1, T / 0.7), y = 20 + fall * 130;
+  if (kind !== 'flash' && T > 0.7) { const k = Math.min(1, (T - 0.7) / 0.3); const gr = g.createLinearGradient(0, 0, 0, 200); gr.addColorStop(0, 'rgba(255,92,108,0)'); gr.addColorStop(1, `rgba(255,92,108,${.45 * k})`); g.fillStyle = gr; g.fillRect(215, 0, 50, 200); }
+  if (kind === 'flash') { if (T > 0.3 && T < 0.6) { g.fillStyle = `rgba(255,255,255,${.6 - (T - .3) * 2})`; g.fillRect(0, 0, w, h); } if (T > 0.3 && ok(IMG.blade)) g.drawImage(IMG.blade, 200, 110, 80, 80); }
+  else { g.save(); g.translate(240, y); g.rotate((1 - fall) * 2.5); g.fillStyle = col; g.strokeStyle = '#111'; g.lineWidth = 2; g.beginPath(); g.moveTo(0, -24); g.lineTo(16, 0); g.lineTo(0, 24); g.lineTo(-16, 0); g.closePath(); g.fill(); g.stroke(); g.restore(); }
+  const veil = kind === 'veil', open = veil ? T > 2.0 : T > 0.9;
+  if (open && kind !== 'flash') { const k = Math.min(1, (T - (veil ? 2.0 : 0.9)) / 0.3); g.globalAlpha = k; if (ok(IMG.blade)) g.drawImage(IMG.blade, 200, 110, 80, 80); g.globalAlpha = 1; }
+  if (veil && T > 0.9 && T < 2.0) sans(g, 'Tap to unveil', 240, 215, 14, BONE);
+  const lines = ['Dread Blade', '+24 Force on pairs', 'Pairs strike twice'];
+  const shown = kind === 'veil' ? Math.max(0, Math.min(3, Math.floor((T - 2.1) / 0.35) + 1)) : (open || (kind === 'flash' && T > 0.3) ? 3 : 0);
+  for (let i = 0; i < shown; i++) sans(g, lines[i], 380, 120 + i * 22, i ? 13 : 16, i ? BONE : col, 'center');
+}
+const SCENES = {
+  tally_full: (g, t, w, h) => tally(g, t, w, h, 'full'), tally_quick: (g, t, w, h) => tally(g, t, w, h, 'quick'), tally_instant: (g, t, w, h) => tally(g, t, w, h, 'instant'),
+  flare_fire: (g, t, w, h) => flare(g, t, w, h, 'fire'), flare_glass: (g, t, w, h) => flare(g, t, w, h, 'glass'), flare_gold: (g, t, w, h) => flare(g, t, w, h, 'gold'),
+  hit_strong: (g, t, w, h) => hit(g, t, w, h, 1), hit_light: (g, t, w, h) => hit(g, t, w, h, 0.45), hit_none: (g, t, w, h) => hit(g, t, w, h, 0.0),
+  loot_shard: (g, t, w, h) => loot(g, t, w, h, 'shard'), loot_veil: (g, t, w, h) => loot(g, t, w, h, 'veil'), loot_flash: (g, t, w, h) => loot(g, t, w, h, 'flash'),
+};
+
+const DECISION = {
+ "title": "Gravehand 0.4.4: scoring feel and the big score",
+ "intro": "You picked Tier 1 and a bigger score. Pick one card per row, then Copy my picks and paste them in the chat. Moving previews play at 2x. Use the speed buttons at the bottom.",
+ "note": "Sketches: plain shapes plus the game's own pictures, to show the motion and the layout. The picks get built properly in the game. Every effect follows the Reduce motion setting. The rose window start screen and the Crypt glass sounds are already picked and come in 0.4.4 too.",
+ "label": "Gravehand 0.4.4 picks",
+ "questions": [
+  {
+   "id": "score",
+   "name": "1. The big score",
+   "sub": "Balatro keeps the score in your face. Today Gravehand shows it as a small line in the top left.",
+   "options": [
+    {
+     "title": "A. Run score plate",
+     "meta": [
+      "Your total for the run, big, with your best beside it",
+      "Flares when you pass your best"
+     ],
+     "media": {
+      "img": "img/score_a.jpg"
+     }
+    },
+    {
+     "title": "B. This fight plate",
+     "meta": [
+      "Damage dealt to this monster against what it takes to kill it",
+      "Closest to Balatro's round score"
+     ],
+     "media": {
+      "img": "img/score_b.jpg"
+     }
+    },
+    {
+     "title": "C. Both",
+     "meta": [
+      "Run score and this fight side by side in the top bar",
+      "Health moves right"
+     ],
+     "media": {
+      "img": "img/score_c.jpg"
+     },
+     "rec": true
+    }
+   ]
+  },
+  {
+   "id": "tally",
+   "name": "2. How a hand counts up",
+   "sub": "Force adds up card by card, then Fury, then charms fire left to right.",
+   "options": [
+    {
+     "title": "A. Full count",
+     "meta": [
+      "Each card, then Fury, then each charm, with a rising note on each",
+      "About 2.5 s at 1x. Most like Balatro"
+     ],
+     "media": {
+      "draw": "tally_full"
+     },
+     "rec": true
+    },
+    {
+     "title": "B. Quick count",
+     "meta": [
+      "Cards together, then Fury and charms",
+      "About 1.2 s at 1x"
+     ],
+     "media": {
+      "draw": "tally_quick"
+     }
+    },
+    {
+     "title": "C. At once",
+     "meta": [
+      "The total lands with one hit",
+      "Fastest, least drama"
+     ],
+     "media": {
+      "draw": "tally_instant"
+     }
+    }
+   ]
+  },
+  {
+   "id": "flare",
+   "name": "3. The kill flare",
+   "sub": "Plays the moment the count shows the hand will kill.",
+   "options": [
+    {
+     "title": "A. Stained glass fire",
+     "meta": [
+      "Flames rise around the damage panel",
+      "Balatro's creator calls the flaming score his proudest feature"
+     ],
+     "media": {
+      "draw": "flare_fire"
+     },
+     "rec": true
+    },
+    {
+     "title": "B. Glass crack and shine",
+     "meta": [
+      "The panel cracks like a window and a light sweeps across"
+     ],
+     "media": {
+      "draw": "flare_glass"
+     }
+    },
+    {
+     "title": "C. Gold burst",
+     "meta": [
+      "Gold rays and coins burst out"
+     ],
+     "media": {
+      "draw": "flare_gold"
+     }
+    }
+   ]
+  },
+  {
+   "id": "hit",
+   "name": "4. How hard a hit lands",
+   "sub": "Shake, a short freeze on impact and a flinch. Settings keep Shake and Reduce motion.",
+   "options": [
+    {
+     "title": "A. Strong",
+     "meta": [
+      "Big shake, a short hit pause, a white flash"
+     ],
+     "media": {
+      "draw": "hit_strong"
+     }
+    },
+    {
+     "title": "B. Light",
+     "meta": [
+      "Small shake and a flash, no pause"
+     ],
+     "media": {
+      "draw": "hit_light"
+     },
+     "rec": true
+    },
+    {
+     "title": "C. None",
+     "meta": [
+      "Only the damage number floats up"
+     ],
+     "media": {
+      "draw": "hit_none"
+     }
+    }
+   ]
+  },
+  {
+   "id": "buzz",
+   "name": "5. Phone buzz",
+   "sub": "Tiny ticks on each scored card and one heavier pulse on a kill. There is a switch in Settings either way.",
+   "options": [
+    {
+     "title": "A. On by default",
+     "meta": [
+      "Android only. The browser never buzzes"
+     ],
+     "media": {},
+     "rec": true
+    },
+    {
+     "title": "B. Off by default",
+     "meta": [
+      "You turn it on in Settings"
+     ],
+     "media": {}
+    }
+   ]
+  },
+  {
+   "id": "speed",
+   "name": "6. Game speed",
+   "sub": "A new Settings choice: 1x, 2x, 3x or 4x for the count-up and the effects.",
+   "options": [
+    {
+     "title": "A. Start at 1x",
+     "meta": [
+      "The full show the first time"
+     ],
+     "media": {},
+     "rec": true
+    },
+    {
+     "title": "B. Start at 2x",
+     "meta": [
+      "Snappier from the start"
+     ],
+     "media": {}
+    }
+   ]
+  },
+  {
+   "id": "loot",
+   "name": "7. Loot reveal",
+   "sub": "When gear drops after a fight or from treasure.",
+   "options": [
+    {
+     "title": "A. Glass shard",
+     "meta": [
+      "A shard falls in the tier color with a light pillar and a chime",
+      "Dread gets a longer chime and a dim screen"
+     ],
+     "media": {
+      "draw": "loot_shard"
+     }
+    },
+    {
+     "title": "B. Shard, then unveil",
+     "meta": [
+      "Like A, and Elite and boss gear drops veiled",
+      "Tap it and the lines roll in one by one"
+     ],
+     "media": {
+      "draw": "loot_veil"
+     },
+     "rec": true
+    },
+    {
+     "title": "C. Simple flash",
+     "meta": [
+      "The item appears with a flash"
+     ],
+     "media": {
+      "draw": "loot_flash"
+     }
+    }
+   ]
+  },
+  {
+   "id": "after",
+   "name": "8. After 0.4.4",
+   "sub": "From the research list.",
+   "options": [
+    {
+     "title": "A. Tier 2: choices",
+     "meta": [
+      "Boss shown on the map, monster's next moves, burn or copy a card, interest on gold, gear compare"
+     ],
+     "media": {},
+     "rec": true
+    },
+    {
+     "title": "B. Tier 3: builds",
+     "meta": [
+      "Elite marks, Dread powers, Smith rerolls, new charm families"
+     ],
+     "media": {}
+    },
+    {
+     "title": "C. Tier 4: replay",
+     "meta": [
+      "Challenge levels above Midnight, Trials, daily seed and share codes, run recap"
+     ],
+     "media": {}
+    }
+   ]
+  }
+ ]
+};
+const $=s=>document.querySelector(s), picks={};
+$('#title').textContent=DECISION.title;$('#intro').textContent=DECISION.intro;$('#note').textContent=DECISION.note;
+for(const q of DECISION.questions){
+  const sec=document.createElement('section');
+  sec.innerHTML=`<h2></h2><p class="mute"></p><div class="grid"></div><textarea rows="1" placeholder="Notes for this one (optional)"></textarea>`;
+  sec.querySelector('h2').textContent=q.name;sec.querySelector('p').textContent=q.sub||'';
+  q.options.forEach((o,i)=>{
+    const c=document.createElement('div');c.className='card';
+    c.innerHTML=`<div class="opt">Option ${String.fromCharCode(65+i)}${o.rec?'<span class="rec">Recommended</span>':''}</div><h3></h3>`;
+    c.querySelector('h3').textContent=o.title;
+    for(const m of (o.meta||[])){const d=document.createElement('div');d.className='meta';d.textContent=m;c.appendChild(d)}
+    const md=o.media||{};
+    if(md.img){const e=document.createElement('img');e.src=md.img;e.alt=o.title;c.appendChild(e)}
+    if(md.video){const e=document.createElement('video');e.src=md.video;e.controls=true;e.muted=true;e.loop=true;c.appendChild(e)}
+    if(md.draw&&SCENES[md.draw]){const e=document.createElement('canvas');e.width=480;e.height=270;e.style.cssText='width:100%;max-width:800px;aspect-ratio:4/3;border-radius:10px;margin:8px 0;background:#000;display:block';e.dataset.draw=md.draw;const wr=document.createElement('div');wr.className='live';wr.appendChild(e);c.appendChild(wr)}
+    if(md.audio){const e=document.createElement('audio');e.src=md.audio;e.controls=true;e.preload='none';c.appendChild(e)}
+    const b=document.createElement('button');b.className='pick';b.textContent='Pick this one';c.appendChild(b);
+    b.onclick=()=>{sec.querySelectorAll('.card').forEach(x=>x.classList.remove('on'));c.classList.add('on');picks[q.id]={q:q.name,o:o.title};draw()};
+    sec.querySelector('.grid').appendChild(c)});
+  sec.querySelector('textarea').oninput=e=>{(picks[q.id]=picks[q.id]||{q:q.name,o:''}).n=e.target.value;draw()};
+  $('#main').appendChild(sec)}
+const cvs=[...document.querySelectorAll('canvas[data-draw]')],seen=new Set();
+const io=new IntersectionObserver(es=>es.forEach(x=>x.isIntersecting?seen.add(x.target):seen.delete(x.target)));cvs.forEach(c=>io.observe(c));
+let speed=2,clock=0,last=0;document.querySelectorAll('.spd').forEach(b=>b.onclick=()=>{speed=+b.dataset.s;document.querySelectorAll('.spd').forEach(x=>x.classList.toggle('on',x===b))});
+(function loop(ms){clock+=Math.min(100,ms-last)/1000*speed;last=ms;for(const c of seen){const g=c.getContext('2d');g.save();SCENES[c.dataset.draw](g,clock,c.width,c.height);g.restore()}requestAnimationFrame(loop)})(0);
+document.addEventListener('play',e=>{document.querySelectorAll('audio,video').forEach(o=>{if(o!==e.target)o.pause()})},true);
+function text(){return DECISION.label+': '+DECISION.questions.filter(q=>picks[q.id]).map(q=>{const p=picks[q.id];return q.name+': '+(p.o||'no pick')+(p.n?' ('+p.n.trim()+')':'')}).join('. ')+'.'}
+function draw(){const n=DECISION.questions.filter(q=>picks[q.id]&&picks[q.id].o).length;$('#sum').textContent=n?`${n} of ${DECISION.questions.length} picked`+(n<DECISION.questions.length?'':'. Press Copy my picks.'):'No picks yet.'}
+$('#copy').onclick=async e=>{try{await navigator.clipboard.writeText(text());e.target.textContent='Copied'}catch(err){e.target.textContent='Select the text to copy'}setTimeout(()=>e.target.textContent='Copy my picks',1800)};
+</script></body></html>
